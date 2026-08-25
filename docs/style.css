@@ -1,9 +1,11 @@
 /* arXiv-style LaTeX Academic Typography */
 :root {
-    --bg-color: #fdfdfd;
-    --text-color: #1a1a1a;
-    --accent-color: #1a5f7a; /* Deep teal for links/emphasis */
-    --border-color: #000; /* Strict academic borders are solid black/dark */
+    --bg-color: #fbf9f4; /* Warm off-white / cream */
+    --text-color: #22201c; /* Dark charcoal, warm */
+    --accent-color: #8c3a3a; /* Deep burgundy / oxblood */
+    --accent-light: #f5eaea; /* Very light burgundy tint */
+    --border-color: #d1cbc2; /* Warm subtle border */
+    --border-dark: #1a1a1a; /* Academic tables */
     --font-serif: 'STIX Two Text', 'Latin Modern Roman', 'Computer Modern', Georgia, serif;
     --font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace;
     --max-width: 740px;
@@ -14,7 +16,7 @@ body {
     color: var(--text-color);
     font-family: var(--font-serif);
     font-size: 1.1rem; /* Slightly smaller for an academic feel */
-    line-height: 1.5;
+    line-height: 1.55;
     margin: 0;
     padding: 0;
     display: flex;
@@ -24,51 +26,67 @@ body {
 /* Typography */
 h1, h2, h3, h4 {
     font-family: var(--font-serif);
-    color: #000;
+    color: #1a1815;
 }
 
 /* Title block arXiv style */
 .title-block {
     text-align: center;
-    margin-bottom: 3rem;
+    margin-bottom: 1.5rem;
 }
 
 .title-block h1 {
-    font-size: 2.25rem;
+    font-size: 2.3rem;
     font-weight: 600;
-    line-height: 1.25;
+    line-height: 1.3;
     margin-bottom: 1.5rem;
 }
 
 .title-block .byline {
-    font-size: 1.2rem;
+    font-size: 1.25rem;
     font-weight: 400;
     margin-bottom: 0.5rem;
 }
 
 .title-block .affiliation {
     font-size: 0.95rem;
-    color: #444;
+    color: #5a544a;
+}
+
+.title-rule {
+    border: none;
+    border-top: 1px solid var(--accent-color);
+    margin: 2rem 0;
+    opacity: 0.5;
+}
+.abstract-rule {
+    border: none;
+    border-top: 1px solid var(--border-color);
+    margin: 2rem 0;
 }
 
 /* Abstract arXiv style */
 .abstract-block {
-    margin: 0 auto 3rem auto;
+    margin: 0 auto;
     width: 90%;
     font-size: 1.05rem;
-    line-height: 1.45;
+    line-height: 1.55;
 }
 
 .abstract-block strong {
-    font-size: 1rem;
+    font-size: 1.05rem;
+}
+
+.abstract-spacer {
+    height: 4rem;
 }
 
 /* Headings */
 h2 {
-    font-size: 1.4rem;
+    font-size: 1.45rem;
     font-weight: 600;
-    margin-top: 3rem;
-    margin-bottom: 1rem;
+    margin-top: 3.5rem;
+    margin-bottom: 1.2rem;
 }
 
 h3 {
@@ -81,18 +99,19 @@ h3 {
 .sec-num {
     font-variant-caps: small-caps;
     margin-right: 0.4rem;
+    color: var(--accent-color);
 }
 
 p {
     margin-bottom: 1.25rem;
-    text-align: justify; /* Common in LaTeX, but web justify can be rough, so we keep it subtle or let it be */
+    text-align: justify;
 }
 
 a {
     color: var(--accent-color);
     text-decoration: none;
-    border-bottom: 1px solid rgba(26, 95, 122, 0.3);
-    transition: border-bottom-color 0.2s;
+    border-bottom: 1px solid transparent;
+    transition: border-bottom-color 0.2s, color 0.2s;
 }
 
 a:hover {
@@ -106,8 +125,8 @@ strong {
 code {
     font-family: var(--font-mono);
     font-size: 0.85em;
-    padding: 0.1em 0.2em;
-    background: #f4f4f4;
+    padding: 0.15em 0.25em;
+    background: #f0eDe3;
     border-radius: 2px;
 }
 
@@ -140,7 +159,7 @@ code {
 }
 
 .toc a {
-    color: #555;
+    color: #6a6458;
     border: none;
     transition: color 0.2s;
 }
@@ -167,12 +186,12 @@ code {
 .kpi-strip {
     display: flex;
     gap: 2rem;
-    margin: 2rem 0;
+    margin: 2.5rem 0;
     flex-wrap: wrap;
     justify-content: space-around;
     border-top: 1px solid var(--border-color);
     border-bottom: 1px solid var(--border-color);
-    padding: 1rem 0;
+    padding: 1.5rem 0;
 }
 
 .kpi-card {
@@ -181,7 +200,7 @@ code {
 
 .kpi-value {
     display: block;
-    font-size: 1.5rem;
+    font-size: 1.6rem;
     font-weight: 600;
     color: var(--text-color);
 }
@@ -190,12 +209,13 @@ code {
     display: block;
     font-size: 0.85rem;
     font-variant-caps: small-caps;
-    color: #444;
+    color: #5a544a;
+    letter-spacing: 0.5px;
 }
 
 /* Academic Tables */
 .table-block {
-    margin: 3rem 0;
+    margin: 3.5rem 0;
 }
 
 .academic-table {
@@ -203,18 +223,18 @@ code {
     border-collapse: collapse;
     font-size: 0.95rem;
     font-family: var(--font-serif);
-    border-top: 2px solid var(--border-color);
-    border-bottom: 2px solid var(--border-color);
+    border-top: 2px solid var(--border-dark);
+    border-bottom: 2px solid var(--border-dark);
 }
 
 .academic-table th, .academic-table td {
-    padding: 0.75rem 1rem;
+    padding: 0.85rem 1rem;
     text-align: left;
     border: none;
 }
 
 .academic-table thead tr {
-    border-bottom: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-dark);
 }
 
 /* Align numeric columns */
@@ -224,32 +244,33 @@ code {
     font-variant-numeric: tabular-nums;
 }
 
-/* No zebra stripes in academic papers, but we can highlight a row gently */
+/* No zebra stripes in academic papers, but we highlight a row gently with color */
 .academic-table .highlight-row td {
     font-weight: 600;
+    color: var(--accent-color);
 }
 .academic-table .circular-note {
-    font-size: 0.8em;
-    color: #666;
+    font-size: 0.85em;
+    color: #7a7468;
     font-weight: normal;
 }
 
 /* Figures */
 .figure-block {
-    margin: 3.5rem auto;
+    margin: 4rem auto;
     text-align: center;
-    max-width: 90%;
+    max-width: 95%;
 }
 
 .chart-wrapper {
-    margin-bottom: 1rem;
+    margin-bottom: 1.25rem;
 }
 
 .caption {
     font-size: 0.95rem;
-    color: #444;
+    color: #5a544a;
     text-align: center;
-    line-height: 1.4;
+    line-height: 1.45;
 }
 
 /* Equations */
@@ -257,9 +278,10 @@ code {
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 2.5rem 0;
+    margin: 3rem 0;
     position: relative;
     width: 100%;
+    overflow-x: auto;
 }
 
 .math-display {
@@ -272,12 +294,96 @@ code {
     right: 0;
     top: 50%;
     transform: translateY(-50%);
+    color: var(--accent-color);
+}
+
+/* SVG Custom Diagram */
+.intro-diagram {
+    display: flex;
+    justify-content: center;
+    margin: 3rem 0;
+}
+.intro-diagram svg {
+    max-width: 100%;
+    height: auto;
 }
 
 /* Pull Quotes / Emphasis */
 .pull-quote {
+    display: block;
+    margin: 2.5rem 0;
+    padding-left: 1.5rem;
+    border-left: 3px solid var(--accent-color);
     color: var(--accent-color);
-    font-size: 1.05em;
+    font-size: 1.1rem;
+    font-style: italic;
+}
+span.pull-quote {
+    display: inline;
+    margin: 0;
+    padding: 0;
+    border: none;
+    color: var(--accent-color);
+    font-style: normal;
+}
+
+/* Action Badges */
+.action-list { 
+    list-style: none; 
+    padding: 0; 
+}
+.action-list li { 
+    margin-bottom: 1.2rem; 
+    line-height: 1.6;
+}
+.action-badge { 
+    font-family: var(--font-mono); 
+    font-size: 0.75rem; 
+    padding: 0.2rem 0.5rem; 
+    border-radius: 3px; 
+    font-weight: 600; 
+    text-transform: uppercase; 
+    letter-spacing: 0.5px; 
+    white-space: nowrap; 
+    margin-right: 0.5rem;
+    display: inline-block;
+    vertical-align: middle;
+}
+.badge-structural { background: #f5eaea; color: var(--accent-color); border: 1px solid #d9c4c4; }
+.badge-investigate { background: #e8eaec; color: #3b5c7a; border: 1px solid #c8d0d6; }
+.badge-verify { background: #efebe4; color: #7a6a4f; border: 1px solid #d4cdc1; }
+.badge-refresh { background: #efefef; color: #555; border: 1px solid #ddd; }
+
+/* Reproducibility Appendix */
+.appendix-section {
+    background-color: #f7f5ef;
+    padding: 2.5rem 3rem;
+    border-radius: 6px;
+    border: 1px solid #e8e4d8;
+    margin: 4rem 0;
+}
+.appendix-section h2 { 
+    margin-top: 0; 
+}
+
+/* Acknowledgments Closing */
+.closing-section {
+    margin-top: 6rem;
+    text-align: center;
+    border-top: 1px solid var(--border-color);
+    padding-top: 3.5rem;
+}
+.closing-mark {
+    font-size: 1.5rem;
+    color: var(--accent-color);
+    display: block;
+    margin-bottom: 1rem;
+}
+.closing-section h2 { 
+    margin-top: 0; 
+    border: none; 
+    justify-content: center; 
+    display: flex; 
 }
 
 /* Footnotes */
@@ -289,16 +395,16 @@ code {
 }
 
 .footnotes {
-    margin-top: 4rem;
-    font-size: 0.9rem;
-    color: #444;
+    margin-top: 5rem;
+    font-size: 0.95rem;
+    color: #5a544a;
 }
 .footnotes hr {
     border: none;
-    border-top: 1px solid #ccc;
+    border-top: 1px solid var(--border-color);
     width: 20%;
     margin-left: 0;
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
 }
 .footnotes p {
     margin-bottom: 0.5rem;
@@ -313,15 +419,16 @@ code {
 
 @media (max-width: 768px) {
     .content {
-        padding: 2rem 1.5rem;
+        padding: 2.5rem 1.5rem;
     }
     
     .title-block h1 {
-        font-size: 1.8rem;
+        font-size: 1.9rem;
     }
     
     .abstract-block {
         width: 100%;
+        text-align: left;
     }
     
     .kpi-strip {
@@ -332,15 +439,14 @@ code {
         max-width: 100%;
     }
     
-    /* Display equations might overflow on mobile, enable scroll if needed */
-    .display-equation {
-        overflow-x: auto;
-    }
-    
     .academic-table {
         font-size: 0.85rem;
     }
     .academic-table th, .academic-table td {
-        padding: 0.5rem;
+        padding: 0.6rem 0.5rem;
+    }
+
+    .appendix-section {
+        padding: 1.5rem 1.5rem;
     }
 }
