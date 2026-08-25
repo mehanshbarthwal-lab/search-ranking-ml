@@ -1,4 +1,4 @@
-/* arXiv-style LaTeX Academic Typography */
+/* arXiv-style Full LaTeX Academic Typography */
 :root {
     --bg-color: #fbf9f4; /* Warm off-white / cream */
     --text-color: #22201c; /* Dark charcoal, warm */
@@ -8,15 +8,15 @@
     --border-dark: #1a1a1a; /* Academic tables */
     --font-serif: 'STIX Two Text', 'Latin Modern Roman', 'Computer Modern', Georgia, serif;
     --font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace;
-    --max-width: 740px;
+    --max-width: 800px; /* Precise LaTeX measure */
 }
 
 body {
     background-color: var(--bg-color);
     color: var(--text-color);
     font-family: var(--font-serif);
-    font-size: 1.1rem; /* Slightly smaller for an academic feel */
-    line-height: 1.55;
+    font-size: 1.15rem; /* Clean readable scale */
+    line-height: 1.6;
     margin: 0;
     padding: 0;
     display: flex;
@@ -27,18 +27,19 @@ body {
 h1, h2, h3, h4 {
     font-family: var(--font-serif);
     color: #1a1815;
+    line-height: 1.3;
 }
 
 /* Title block arXiv style */
 .title-block {
     text-align: center;
-    margin-bottom: 1.5rem;
+    margin-bottom: 2rem;
+    padding-top: 2rem;
 }
 
 .title-block h1 {
-    font-size: 2.3rem;
+    font-size: 2.2rem;
     font-weight: 600;
-    line-height: 1.3;
     margin-bottom: 1.5rem;
 }
 
@@ -49,56 +50,44 @@ h1, h2, h3, h4 {
 }
 
 .title-block .affiliation {
-    font-size: 0.95rem;
+    font-size: 1rem;
     color: #5a544a;
 }
 
-.title-rule {
-    border: none;
-    border-top: 1px solid var(--accent-color);
-    margin: 2rem 0;
-    opacity: 0.5;
-}
-.abstract-rule {
-    border: none;
-    border-top: 1px solid var(--border-color);
-    margin: 2rem 0;
-}
-
-/* Abstract arXiv style */
 .abstract-block {
-    margin: 0 auto;
-    width: 90%;
+    margin: 3rem auto;
+    width: 85%;
     font-size: 1.05rem;
-    line-height: 1.55;
+    line-height: 1.6;
+    text-align: justify;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 2rem;
 }
 
 .abstract-block strong {
     font-size: 1.05rem;
 }
 
-.abstract-spacer {
-    height: 4rem;
-}
-
-/* Headings */
+/* Headings (Strict LaTeX Spacing) */
 h2 {
     font-size: 1.45rem;
     font-weight: 600;
-    margin-top: 3.5rem;
-    margin-bottom: 1.2rem;
+    margin-top: 4rem;
+    margin-bottom: 1.5rem;
 }
 
 h3 {
     font-size: 1.15rem;
     font-weight: 600;
-    margin-top: 2rem;
-    margin-bottom: 0.75rem;
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
 }
 
 .sec-num {
     font-variant-caps: small-caps;
-    margin-right: 0.4rem;
+    margin-right: 0.5rem;
     color: var(--accent-color);
 }
 
@@ -109,6 +98,7 @@ p {
 
 a {
     color: var(--accent-color);
+    font-weight: 500;
     text-decoration: none;
     border-bottom: 1px solid transparent;
     transition: border-bottom-color 0.2s, color 0.2s;
@@ -133,7 +123,7 @@ code {
 /* Layout */
 .content {
     max-width: var(--max-width);
-    padding: 4rem 2rem;
+    padding: 2rem;
     box-sizing: border-box;
     width: 100%;
 }
@@ -144,7 +134,7 @@ code {
     top: 4rem;
     left: max(1rem, calc(50% - var(--max-width)/2 - 240px));
     width: 200px;
-    font-size: 0.9rem;
+    font-size: 0.95rem;
     font-family: var(--font-serif);
 }
 
@@ -159,39 +149,47 @@ code {
 }
 
 .toc a {
-    color: var(--accent-color); font-weight: 500;
+    color: var(--accent-color);
+    font-weight: 500;
     border: none;
     transition: color 0.2s;
 }
 
 .toc a:hover {
-    color: var(--accent-color);
+    color: var(--text-color);
 }
 
 .toc .sec-num {
     font-weight: 600;
 }
 
-/* Components */
-.meta-list {
-    padding-left: 2rem;
-    margin: 2rem 0;
+/* Lists */
+ul {
+    padding-left: 1.5rem;
+    margin-bottom: 1.25rem;
 }
 
-.meta-list li {
+ul li {
     margin-bottom: 0.5rem;
+    line-height: 1.6;
 }
 
-/* KPIs - Minimal text layout */
-.kpi-strip {
+.standard-list li {
+    margin-bottom: 0.75rem;
+}
+
+/* KPIs - Data Science Stat Cards */
+.kpi-strip.stat-cards {
     display: flex;
-    gap: 2rem;
-    margin: 2.5rem 0;
+    gap: 1.5rem;
+    margin: 3.5rem 0;
     flex-wrap: wrap;
     justify-content: space-around;
-    border-top: 1px solid var(--border-color);
-    border-bottom: 1px solid var(--border-color);
-    padding: 1.5rem 0;
+    background-color: #fff;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+    padding: 2rem 1rem;
 }
 
 .kpi-card {
@@ -200,22 +198,33 @@ code {
 
 .kpi-value {
     display: block;
-    font-size: 1.6rem;
+    color: var(--accent-color);
+    font-size: 2.2rem;
+    font-family: var(--font-mono);
     font-weight: 600;
-    color: var(--text-color);
 }
 
 .kpi-label {
     display: block;
-    font-size: 0.85rem;
-    font-variant-caps: small-caps;
-    color: #5a544a;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #4a453d;
+    margin-top: 0.25rem;
     letter-spacing: 0.5px;
+    text-transform: uppercase;
 }
 
 /* Academic Tables */
 .table-block {
-    margin: 3.5rem 0;
+    margin: 4rem 0;
+}
+
+.table-caption {
+    font-size: 1rem;
+    color: #4a453d;
+    text-align: left;
+    margin-bottom: 1rem;
+    line-height: 1.5;
 }
 
 .academic-table {
@@ -237,18 +246,17 @@ code {
     border-bottom: 1px solid var(--border-dark);
 }
 
-/* Align numeric columns */
 .academic-table .numeric-col {
     text-align: right;
     font-feature-settings: "tnum";
     font-variant-numeric: tabular-nums;
 }
 
-/* No zebra stripes in academic papers, but we highlight a row gently with color */
 .academic-table .highlight-row td {
     font-weight: 600;
     color: var(--accent-color);
 }
+
 .academic-table .circular-note {
     font-size: 0.85em;
     color: #7a7468;
@@ -259,18 +267,19 @@ code {
 .figure-block {
     margin: 4rem auto;
     text-align: center;
-    max-width: 95%;
+    max-width: 100%;
 }
 
 .chart-wrapper {
     margin-bottom: 1.25rem;
 }
 
-.caption {
-    font-size: 0.95rem;
-    color: #5a544a;
-    text-align: center;
-    line-height: 1.45;
+figcaption {
+    font-size: 1rem;
+    color: #4a453d;
+    text-align: left;
+    line-height: 1.5;
+    margin-top: 1rem;
 }
 
 /* Equations */
@@ -295,14 +304,17 @@ code {
     top: 50%;
     transform: translateY(-50%);
     color: var(--accent-color);
+    font-family: var(--font-serif);
 }
 
 /* SVG Custom Diagram */
 .intro-diagram {
     display: flex;
-    justify-content: center;
-    margin: 3rem 0;
+    flex-direction: column;
+    align-items: center;
+    margin: 3.5rem 0;
 }
+
 .intro-diagram svg {
     max-width: 100%;
     height: auto;
@@ -311,7 +323,7 @@ code {
 /* Pull Quotes / Emphasis */
 .pull-quote {
     display: block;
-    margin: 2.5rem 0;
+    margin: 3rem 0;
     padding: 1.5rem 1.5rem 1.5rem 2rem;
     border-left: 4px solid var(--accent-color);
     background-color: #f7edea;
@@ -319,14 +331,7 @@ code {
     font-size: 1.15rem;
     font-style: italic;
     border-radius: 0 4px 4px 0;
-}
-span.pull-quote {
-    display: inline;
-    margin: 0;
-    padding: 0;
-    border: none;
-    color: var(--accent-color);
-    font-style: normal;
+    line-height: 1.6;
 }
 
 /* Action Badges */
@@ -335,12 +340,12 @@ span.pull-quote {
     padding: 0; 
 }
 .action-list li { 
-    margin-bottom: 1.2rem; 
+    margin-bottom: 1.5rem; 
     line-height: 1.6;
 }
 .action-badge { 
     font-family: var(--font-mono); 
-    font-size: 0.75rem; 
+    font-size: 0.8rem; 
     padding: 0.2rem 0.5rem; 
     border-radius: 3px; 
     font-weight: 600; 
@@ -359,11 +364,12 @@ span.pull-quote {
 /* Reproducibility Appendix */
 .appendix-section {
     background-color: #f7f5ef;
-    padding: 2.5rem 3rem;
+    padding: 3rem 3.5rem;
     border-radius: 6px;
     border: 1px solid #e8e4d8;
-    margin: 4rem 0;
+    margin: 5rem 0;
 }
+
 .appendix-section h2 { 
     margin-top: 0; 
 }
@@ -373,13 +379,13 @@ span.pull-quote {
     margin-top: 6rem;
     text-align: center;
     border-top: 1px solid var(--border-color);
-    padding-top: 3.5rem;
+    padding-top: 4rem;
 }
 .closing-mark {
-    font-size: 1.5rem;
+    font-size: 1.8rem;
     color: var(--accent-color);
     display: block;
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
 }
 .closing-section h2 { 
     margin-top: 0; 
@@ -388,12 +394,19 @@ span.pull-quote {
     display: flex; 
 }
 
-/* Footnotes */
+/* Footnotes (LaTeX style block) */
 .footnote-ref {
     font-size: 0.75em;
     vertical-align: super;
     border: none;
     color: var(--accent-color);
+    margin-left: 0.1em;
+}
+
+.footnote-backref {
+    color: var(--accent-color);
+    font-weight: 600;
+    margin-right: 0.5rem;
 }
 
 .footnotes {
@@ -404,12 +417,12 @@ span.pull-quote {
 .footnotes hr {
     border: none;
     border-top: 1px solid var(--border-color);
-    width: 20%;
+    width: 25%;
     margin-left: 0;
-    margin-bottom: 1.5rem;
+    margin-bottom: 2rem;
 }
 .footnotes p {
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.75rem;
 }
 
 /* Responsive */
@@ -421,7 +434,7 @@ span.pull-quote {
 
 @media (max-width: 768px) {
     .content {
-        padding: 2.5rem 1.5rem;
+        padding: 2rem 1.5rem;
     }
     
     .title-block h1 {
@@ -449,27 +462,6 @@ span.pull-quote {
     }
 
     .appendix-section {
-        padding: 1.5rem 1.5rem;
+        padding: 2rem 1.5rem;
     }
-}
-
-/* Stat Cards for DS Portfolio Look */
-.kpi-strip.stat-cards {
-    background-color: #fff;
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
-    padding: 2rem 1rem;
-    margin: 3.5rem 0;
-}
-.kpi-strip.stat-cards .kpi-value {
-    color: var(--accent-color);
-    font-size: 2.2rem;
-    font-family: var(--font-mono);
-}
-.kpi-strip.stat-cards .kpi-label {
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: #4a453d;
-    margin-top: 0.25rem;
 }
