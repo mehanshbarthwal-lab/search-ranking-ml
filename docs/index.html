@@ -6,7 +6,11 @@
     <title>Answered Away: Detecting and Costing Click-Suppression in Declining Content</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,600;1,400&family=STIX+Two+Text:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js" crossorigin="anonymous"></script>
+
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
@@ -14,29 +18,31 @@
     <nav class="toc">
         <ul>
             <li><a href="#abstract">Abstract</a></li>
-            <li><a href="#introduction">Introduction</a></li>
-            <li><a href="#data">Data</a></li>
-            <li><a href="#methodology">Methodology</a></li>
-            <li><a href="#results">Results</a></li>
-            <li><a href="#limitations">Limitations</a></li>
-            <li><a href="#recommendations">Recommendations</a></li>
-            <li><a href="#reproducibility">Reproducibility</a></li>
-            <li><a href="#acknowledgments">Acknowledgments</a></li>
+            <li><a href="#introduction"><span class="sec-num">1</span> Introduction</a></li>
+            <li><a href="#data"><span class="sec-num">2</span> Data</a></li>
+            <li><a href="#methodology"><span class="sec-num">3</span> Methodology</a></li>
+            <li><a href="#results"><span class="sec-num">4</span> Results</a></li>
+            <li><a href="#limitations"><span class="sec-num">5</span> Limitations</a></li>
+            <li><a href="#recommendations"><span class="sec-num">6</span> Recommendations</a></li>
+            <li><a href="#reproducibility"><span class="sec-num">7</span> Reproducibility</a></li>
+            <li><a href="#acknowledgments"><span class="sec-num">8</span> Acknowledgments</a></li>
         </ul>
     </nav>
 
     <main class="content">
-        <header>
+        <header class="title-block">
             <h1>Answered Away: Detecting and Costing Click-Suppression in Declining Content</h1>
+            <div class="byline">Mehansh Barthwal<sup>1</sup></div>
+            <div class="affiliation"><sup>1</sup>FlyRank ML Internship Capstone · Machine Learning Track · 2026</div>
         </header>
 
-        <section id="abstract">
-            <h2>Abstract</h2>
-            <p>When a content page loses clicks, is it because fewer people see it, or because people see it just as often but stop clicking? This project builds a client-grouped classifier on FlyRank warehouse data to distinguish these two patterns using only prior-period signals that pass a decision-time leakage test. Logistic Regression reaches F1=0.350 (base rate 0.229) on a held-out, client-grouped split, corroborated by 5-fold cross-validation (mean F1=0.340, std=0.034). The resulting ranked action queue reaches precision@50=0.58, and is translated into a four-action editor playbook with an honest, lower-bound ad-equivalent dollar estimate of value at risk. Every extension tried after the initial result—new features, a stronger model, hyperparameter tuning, engagement data—converged on the same ~0.35 ceiling, treated here as a finding, not a shortfall.</p>
+        <section id="abstract" class="abstract-block">
+            <strong>Abstract.</strong>
+            <p>When a content page loses clicks, is it because fewer people see it, or because people see it just as often but stop clicking? This project builds a client-grouped classifier on FlyRank warehouse data to distinguish these two patterns using only prior-period signals that pass a decision-time leakage test. <span class="pull-quote">Logistic Regression reaches F1=0.350 (base rate 0.229) on a held-out, client-grouped split, corroborated by 5-fold cross-validation (mean F1=0.340, std=0.034).</span> The resulting ranked action queue reaches precision@50=0.58, and is translated into a four-action editor playbook with an honest, lower-bound ad-equivalent dollar estimate of value at risk. Every extension tried after the initial result—new features, a stronger model, hyperparameter tuning, engagement data—converged on the same ~0.35 ceiling, treated here as a finding, not a shortfall.</p>
         </section>
 
         <section id="introduction">
-            <h2>Introduction / Problem Statement</h2>
+            <h2><span class="sec-num">1</span> Introduction / Problem Statement</h2>
             <p>A content team watching a page's traffic decline has one lever: refresh it. But "declining" hides two very different problems. A page can lose clicks because fewer people ever see it—normal visibility decay—or because roughly the same number of people see it and simply stop clicking, a pattern consistent with something answering the query before the click happens. Treating both as the same problem means editors sometimes refresh pages that were never losing visibility, and sometimes miss pages where a routine refresh was never going to help.</p>
             <p>This project calls the second pattern <strong>answered_away</strong>—explicitly a behavioral label describing what the traffic data looks like, not a confirmed cause. No column in this dataset says what appeared on a search results page for any given query. The goal is a ranked queue that tells a content editor which pages to look at first, and which of two different fixes each one likely needs: a <strong>structural fix</strong> (a clearer direct-answer block near the top, FAQ-style content) for answered_away pages, or a <strong>routine refresh</strong> for pages that are simply losing visibility.</p>
             <ul class="meta-list">
@@ -47,32 +53,56 @@
         </section>
 
         <section id="data">
-            <h2>Data</h2>
-            <p><strong>Release:</strong> FlyRank ML Internship warehouse (Hugging Face), tables <code>fact_content_daily_performance</code> (partitioned by month) and <code>dim_content.parquet</code>, accessed via DuckDB over <code>hf://</code>.</p>
-            <p><strong>Date windows:</strong> prior30 = February 2026, last30 = March 2026. All label and feature construction uses only prior30-period values, checked against a decision-time leakage test.</p>
-            <p><strong>Scale:</strong> the March 2026 (last30) partition alone contains 9,841,378 rows (confirmed via a live row-count query in the executed capstone notebook).</p>
-            <p><strong>Filtering:</strong> pages with <code>gsc_impressions_prior30 >= 50</code> and <code>gsc_clicks_prior30 >= 3</code>, so percent-change labels aren't just noise from a tiny prior base. Pages with fewer than 60 days of history before the March 2026 decision date are excluded from the action queue entirely (1,268 pages on the Week 7 run).</p>
-            <p><strong>What was excluded, and why:</strong> <code>client_hash_id</code> is used only for grouping the train/test split, never as a feature. <code>content_age_days</code> was scoped early but never actually added to the model's feature set—confirmed during validation as a documentation/code mismatch, not a leakage issue. AI-referral session columns were considered and dropped early, populated on only ~6% of pages in the starter sample—too sparse to support a classifier.</p>
-            <p><strong>Public-safety:</strong> no client names, domains, raw queries, or URLs appear anywhere in this repo. All identifiers are pseudonymous hashes (<code>content_hash_id</code>, <code>client_hash_id</code>) used strictly for joins and grouping.</p>
+            <h2><span class="sec-num">2</span> Data</h2>
+            
+            <h3><span class="sec-num">2.1</span> Release</h3>
+            <p>FlyRank ML Internship warehouse (Hugging Face), tables <code>fact_content_daily_performance</code> (partitioned by month) and <code>dim_content.parquet</code>, accessed via DuckDB over <code>hf://</code>.</p>
+            
+            <h3><span class="sec-num">2.2</span> Date windows</h3>
+            <p>prior30 = February 2026, last30 = March 2026. All label and feature construction uses only prior30-period values, checked against a decision-time leakage test.</p>
+            
+            <h3><span class="sec-num">2.3</span> Scale</h3>
+            <p>The March 2026 (last30) partition alone contains 9,841,378 rows (confirmed via a live row-count query in the executed capstone notebook).</p>
+            
+            <h3><span class="sec-num">2.4</span> Filtering</h3>
+            <p>Pages with <code>gsc_impressions_prior30 >= 50</code> and <code>gsc_clicks_prior30 >= 3</code>, so percent-change labels aren't just noise from a tiny prior base. Pages with fewer than 60 days of history before the March 2026 decision date are excluded from the action queue entirely (1,268 pages on the Week 7 run).</p>
+            
+            <h3><span class="sec-num">2.5</span> Exclusions</h3>
+            <p><code>client_hash_id</code> is used only for grouping the train/test split, never as a feature. <code>content_age_days</code> was scoped early but never actually added to the model's feature set<a href="#fn1" class="footnote-ref">[1]</a>. AI-referral session columns were considered and dropped early<a href="#fn2" class="footnote-ref">[2]</a>.</p>
+            
+            <h3><span class="sec-num">2.6</span> Public-safety</h3>
+            <p>No client names, domains, raw queries, or URLs appear anywhere in this repo. All identifiers are pseudonymous hashes (<code>content_hash_id</code>, <code>client_hash_id</code>) used strictly for joins and grouping.</p>
         </section>
 
         <section id="methodology">
-            <h2>Methodology</h2>
-            <p><strong>Label definition</strong> (prior30 vs. last30, on the filtered base pool):</p>
+            <h2><span class="sec-num">3</span> Methodology</h2>
+            
+            <h3><span class="sec-num">3.1</span> Label definition</h3>
+            <p>Label definition (prior30 vs. last30, on the filtered base pool):</p>
             <ul>
-                <li><code>answered_away</code>: impressions change ≥ -5% AND clicks change ≤ -15%</li>
-                <li><code>normal_decay</code>: impressions change ≤ -15% AND clicks change ≤ -15%</li>
+                <li><code>answered_away</code>: <span class="math-inline">\Delta\text{impressions} \geq -5\% \;\land\; \Delta\text{clicks} \leq -15\%</span></li>
+                <li><code>normal_decay</code>: <span class="math-inline">\Delta\text{impressions} \leq -15\% \;\land\; \Delta\text{clicks} \leq -15\%</span></li>
                 <li><code>stable_other</code>: everything else</li>
             </ul>
-            <p><strong>Leakage check:</strong> <code>click_change_pct</code> is not merely correlated with the label—it's an ingredient in the label formula, so it's excluded from the feature set entirely. Confirmed with a deliberate leakage experiment: an honest Random Forest scores F1=0.158 on a random split with no leak, versus F1=0.703 with <code>click_change_pct</code> added back in—that ~0.55 jump is the leakage signature the validation harness is built to catch.</p>
-            <p><strong>Features:</strong> five prior-period numeric signals plus two categorical fields, none derived from the last30 window and none touching the label formula: <code>gsc_impressions_prior30</code>, <code>gsc_clicks_prior30</code>, <code>gsc_avg_position_prior30</code>, <code>word_count</code>, <code>gsc_ctr_prior30</code>, plus <code>content_type</code> and <code>main_intent</code> (one-hot encoded).</p>
-            <p><strong>Baseline:</strong> a hand-written rule taken directly from the <code>pattern_group</code> thresholds. This comparison is circular by construction (F1=1.000, since the rule IS the label), and is reported honestly as such rather than presented as a valid baseline. The real reference point is an earlier honest, non-leaky Random Forest at F1=0.135 on a random split.</p>
-            <p><strong>Model:</strong> Logistic Regression, chosen after Random Forest without <code>class_weight='balanced'</code> badly underperformed (F1=0.108) on this imbalanced, 22.9%-minority-class problem.</p>
-            <p><strong>Validation design:</strong> <code>GroupShuffleSplit</code> grouped by <code>client_hash_id</code> (<code>test_size=0.25</code>, <code>random_state=42</code>), asserting zero client overlap between train and test. Corroborated with 5-fold <code>GroupKFold</code> (mean F1=0.340, std=0.034, range 0.296–0.378), confirming the single-split F1=0.350 is a fair representative estimate rather than a lucky split.</p>
+            
+            <h3><span class="sec-num">3.2</span> Leakage check</h3>
+            <p><code>click_change_pct</code> is not merely correlated with the label—it's an ingredient in the label formula, so it's excluded from the feature set entirely. Confirmed with a deliberate leakage experiment: an honest Random Forest scores F1=0.158 on a random split with no leak, versus F1=0.703 with <code>click_change_pct</code> added back in—that ~0.55 jump is the leakage signature the validation harness is built to catch.</p>
+            
+            <h3><span class="sec-num">3.3</span> Features</h3>
+            <p>Five prior-period numeric signals plus two categorical fields, none derived from the last30 window and none touching the label formula: <code>gsc_impressions_prior30</code>, <code>gsc_clicks_prior30</code>, <code>gsc_avg_position_prior30</code>, <code>word_count</code>, <code>gsc_ctr_prior30</code>, plus <code>content_type</code> and <code>main_intent</code> (one-hot encoded).</p>
+            
+            <h3><span class="sec-num">3.4</span> Baseline</h3>
+            <p>A hand-written rule taken directly from the <code>pattern_group</code> thresholds. This comparison is circular by construction (F1=1.000, since the rule IS the label), and is reported honestly as such rather than presented as a valid baseline. The real reference point is an earlier honest, non-leaky Random Forest at F1=0.135 on a random split.</p>
+            
+            <h3><span class="sec-num">3.5</span> Model</h3>
+            <p>Logistic Regression, chosen after Random Forest without <code>class_weight='balanced'</code> badly underperformed (F1=0.108) on this imbalanced, 22.9%-minority-class problem.</p>
+            
+            <h3><span class="sec-num">3.6</span> Validation design</h3>
+            <p><code>GroupShuffleSplit</code> grouped by <code>client_hash_id</code> (<code>test_size=0.25</code>, <code>random_state=42</code>), asserting zero client overlap between train and test. Corroborated with 5-fold <code>GroupKFold</code> (mean F1=0.340, std=0.034, range 0.296–0.378), confirming the single-split F1=0.350 is a fair representative estimate rather than a lucky split.</p>
         </section>
 
         <section id="results">
-            <h2>Results</h2>
+            <h2><span class="sec-num">4</span> Results</h2>
             
             <div class="kpi-strip">
                 <div class="kpi-card">
@@ -93,106 +123,120 @@
                 </div>
             </div>
 
-            <p><strong>Interpretation:</strong> F1=0.350 is well above the 22.9% base rate, not just a reflection of it. Precision@50=0.58 is the decision-relevant number—of the top 50 pages the model ranks highest, 58% are true answered_away cases, which is what actually matters if an editor can only review about 50 pages a cycle.</p>
+            <p><strong>Interpretation:</strong> F1=0.350 is well above the 22.9% base rate, not just a reflection of it. Precision@50=0.58 is the decision-relevant number—of the top 50 pages the model ranks highest, 58% are true answered_away cases, which is what actually matters if an editor can only review about 50 pages a cycle (see Table 1).</p>
             
-            <p><strong>Model ceiling:</strong> four separate extensions—content age/freshness features, XGBoost, hyperparameter tuning, GA4 engagement features—all converged on roughly 0.35 F1, none producing a meaningful lift. Treat this as evidence of a real ceiling on this feature set, not as a string of failed attempts.</p>
+            <div class="display-equation">
+                <div class="math-display">F_1 = 2 \cdot \frac{\text{precision} \cdot \text{recall}}{\text{precision} + \text{recall}}</div>
+                <span class="equation-number">(1)</span>
+            </div>
 
-            <div class="table-container">
-                <table>
+            <p><span class="pull-quote"><strong>Model ceiling:</strong> four separate extensions—content age/freshness features, XGBoost, hyperparameter tuning, GA4 engagement features—all converged on roughly 0.35 F1, none producing a meaningful lift.</span> Treat this as evidence of a real ceiling on this feature set, not as a string of failed attempts, evaluated via F1 score as defined in Equation 1. Detailed performance metrics, threshold behaviors, action composition, and cross-validation spreads are illustrated in Figures 1 through 4 respectively.</p>
+
+            <div class="table-block">
+                <table class="academic-table">
                     <thead>
                         <tr>
                             <th>Model</th>
                             <th>Split</th>
-                            <th>F1 (answered_away)</th>
-                            <th>Precision@50</th>
+                            <th class="numeric-col">F1 (answered_away)</th>
+                            <th class="numeric-col">Precision@50</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr class="circular-row">
+                        <tr>
                             <td>Rule baseline (<code>pattern_group</code>)</td>
                             <td>—</td>
-                            <td>1.000 (circular)</td>
-                            <td>—</td>
+                            <td class="numeric-col">1.000 <span class="circular-note">(circular)</span></td>
+                            <td class="numeric-col">—</td>
                         </tr>
                         <tr>
                             <td>Random Forest, honest (no leak)</td>
                             <td>random</td>
-                            <td>0.158</td>
-                            <td>—</td>
+                            <td class="numeric-col">0.158</td>
+                            <td class="numeric-col">—</td>
                         </tr>
                         <tr>
                             <td>Random Forest, leaky (<code>click_change_pct</code> included)</td>
                             <td>random</td>
-                            <td>0.703</td>
-                            <td>—</td>
+                            <td class="numeric-col">0.703</td>
+                            <td class="numeric-col">—</td>
                         </tr>
                         <tr>
                             <td>Logistic Regression</td>
                             <td>random</td>
-                            <td>0.365</td>
-                            <td>—</td>
+                            <td class="numeric-col">0.365</td>
+                            <td class="numeric-col">—</td>
                         </tr>
                         <tr class="highlight-row">
                             <td><strong>Logistic Regression</strong></td>
                             <td><strong>grouped (client_hash_id)</strong></td>
-                            <td><strong>0.350</strong></td>
-                            <td><strong>0.58</strong></td>
+                            <td class="numeric-col"><strong>0.350</strong></td>
+                            <td class="numeric-col"><strong>0.580</strong></td>
                         </tr>
                         <tr>
                             <td>XGBoost</td>
                             <td>grouped</td>
-                            <td>0.352</td>
-                            <td>0.52</td>
+                            <td class="numeric-col">0.352</td>
+                            <td class="numeric-col">0.520</td>
                         </tr>
                         <tr>
                             <td>Logistic Regression + content_age_days/days_since_update</td>
                             <td>grouped</td>
-                            <td>0.341</td>
-                            <td>—</td>
+                            <td class="numeric-col">0.341</td>
+                            <td class="numeric-col">—</td>
                         </tr>
                         <tr>
                             <td>Logistic Regression, GroupKFold-tuned</td>
                             <td>grouped (held-out)</td>
-                            <td>0.349</td>
-                            <td>—</td>
+                            <td class="numeric-col">0.349</td>
+                            <td class="numeric-col">—</td>
                         </tr>
                     </tbody>
                 </table>
+                <p class="caption">Table 1: F1 comparison across models and splits, grouped-split Logistic Regression shown as headline result.</p>
             </div>
 
-            <div class="chart-wrapper">
-                <canvas id="f1ComparisonChart"></canvas>
-                <p class="chart-caption">Comparison of F1 scores across models and splits. The baseline rule is circular by definition.</p>
+            <div class="figure-block">
+                <div class="chart-wrapper">
+                    <canvas id="f1ComparisonChart"></canvas>
+                </div>
+                <p class="caption">Figure 1: Comparison of F1 scores across models and splits. The baseline rule is circular by definition.</p>
             </div>
 
-            <div class="chart-wrapper">
-                <canvas id="thresholdSweepChart"></canvas>
-                <p class="chart-caption">F1 and Precision plotted across probability thresholds from 0.10 to 0.90.</p>
+            <div class="figure-block">
+                <div class="chart-wrapper">
+                    <canvas id="thresholdSweepChart"></canvas>
+                </div>
+                <p class="caption">Figure 2: Threshold sweep — F1 and precision as a function of classification threshold.</p>
             </div>
 
-            <div class="chart-wrapper">
-                <canvas id="top50CompositionChart"></canvas>
-                <p class="chart-caption">Composition of recommended actions in the top 50 ranked pages.</p>
+            <div class="figure-block">
+                <div class="chart-wrapper">
+                    <canvas id="top50CompositionChart"></canvas>
+                </div>
+                <p class="caption">Figure 3: Composition of recommended actions in the top 50 ranked pages.</p>
             </div>
 
-            <div class="chart-wrapper">
-                <canvas id="kfoldDistributionChart"></canvas>
-                <p class="chart-caption">Distribution of F1 scores across 5-fold GroupKFold validation (mean 0.340, std 0.034, range 0.296–0.378).</p>
+            <div class="figure-block">
+                <div class="chart-wrapper">
+                    <canvas id="kfoldDistributionChart"></canvas>
+                </div>
+                <p class="caption">Figure 4: Distribution of F1 scores across 5-fold GroupKFold validation (mean 0.340, std 0.034, range 0.296–0.378).</p>
             </div>
 
         </section>
 
         <section id="limitations">
-            <h2>Limitations & Honest Framing</h2>
+            <h2><span class="sec-num">5</span> Limitations & Honest Framing</h2>
             <p><strong>What this work can claim:</strong> that a page's traffic pattern is consistent with click suppression (impressions steady, clicks falling); that this pattern is detectable above base rate using prior-period signals alone; a proxy dollar estimate of ad-equivalent value at risk, clearly labeled as an estimate.</p>
-            <p><strong>What this work cannot claim:</strong> that AI Overviews, or any specific mechanism, caused a page's decline—no column in this dataset confirms what appeared on a results page for any query. It cannot claim measured revenue loss, since there's no conversion or order-value data, only ad-equivalent click value. It cannot claim causal proof of any kind—this is observational historical data with no controlled experiment behind it, association only.</p>
+            <p><span class="pull-quote"><strong>What this work cannot claim:</strong> that AI Overviews, or any specific mechanism, caused a page's decline—no column in this dataset confirms what appeared on a results page for any query.</span> It cannot claim measured revenue loss, since there's no conversion or order-value data, only ad-equivalent click value. It cannot claim causal proof of any kind—this is observational historical data with no controlled experiment behind it, association only.</p>
             <p><strong>Precision, not certainty:</strong> Precision@50=0.58 means roughly 4 in 10 of the top-ranked pages are not true answered_away cases. The playbook routes disagreements between the rule and the model to a review category rather than silently discarding them, but a human still has to look.</p>
-            <p><strong>Client diversity:</strong> 59 total warehouse clients, only about 30 survive the volume filters, with extreme size imbalance (3 to 7,393 rows per client). The grouped-split F1 could shift on a warehouse with a different client mix—exactly why the split is grouped by client in the first place.</p>
+            <p><strong>Client diversity:</strong> 59 total warehouse clients, only about 30 survive the volume filters, with extreme size imbalance (3 to 7,393 rows per client). The grouped-split F1 could shift on a warehouse with a different client mix<a href="#fn3" class="footnote-ref">[3]</a>.</p>
             <p><strong>GA4 coverage:</strong> only about 31% of pages have GA4 engagement data; <code>has_ga4_prior30</code> showed negative permutation importance, so engagement features were not pursued further as a lift lever.</p>
         </section>
 
         <section id="recommendations">
-            <h2>Ranked Recommendations</h2>
+            <h2><span class="sec-num">6</span> Ranked Recommendations</h2>
             <p>The action playbook sorts test-set pages by the grouped-split Logistic Regression's predicted probability of answered_away (descending), then assigns one of four actions using both the model's confidence and the rule-based label as a cross-check:</p>
             <ul>
                 <li><strong>structural_fix</strong>—top-ranked, rule-labeled answered_away, model confidence ≥0.3, no extreme swing. Add or improve a direct-answer block aimed at the query. 28 of the top 50 rows on the real run.</li>
@@ -204,20 +248,20 @@
         </section>
 
         <section id="reproducibility">
-            <h2>Reproducibility</h2>
+            <h2><span class="sec-num">7</span> Reproducibility</h2>
             <p>This section addresses the Pineau ML Reproducibility Checklist v2.0.</p>
             
-            <h3>Models/algorithms</h3>
+            <h3><span class="sec-num">7.1</span> Models/algorithms</h3>
             <ul>
                 <li><strong>Mathematical setting:</strong> Logistic Regression, binary classification (answered_away vs. not), <code>class_weight='balanced'</code>, <code>max_iter=1000</code>, features standardized via <code>StandardScaler</code> before fitting. (Yes)</li>
                 <li><strong>Assumptions:</strong> label is defined from prior30→last30 percentage change in impressions/clicks, not from any ground-truth cause; <code>client_hash_id</code> is used only for split grouping, never as a feature. (Yes)</li>
                 <li><strong>Complexity:</strong> not applicable at this scale. Dataset is tens of thousands of rows after filtering, and Logistic Regression training is not the bottleneck. (N/A)</li>
             </ul>
             
-            <h3>Theoretical claims</h3>
+            <h3><span class="sec-num">7.2</span> Theoretical claims</h3>
             <p>Not applicable—this is an applied/empirical paper, no theoretical proofs are made. (N/A)</p>
             
-            <h3>Dataset</h3>
+            <h3><span class="sec-num">7.3</span> Dataset</h3>
             <ul>
                 <li><strong>Statistics:</strong> 9,841,378 rows pulled in the March 2026 / last30 partition alone. Filtered base pool after <code>gsc_impressions_prior30 >= 50</code> and <code>gsc_clicks_prior30 >= 3</code>; 30 of 59 total warehouse clients survive the volume filters, with a client size range of 3 to 7,393 rows per client; base rate for <code>answered_away</code> is 22.9% of the filtered pool. (Yes)</li>
                 <li><strong>Train/test split:</strong> <code>GroupShuffleSplit</code>, grouped by <code>client_hash_id</code>, <code>test_size=0.25</code>, <code>random_state=42</code>, zero client overlap between train and test asserted. Corroborated with 5-fold <code>GroupKFold</code>. (Yes)</li>
@@ -226,15 +270,15 @@
                 <li><strong>Data collection:</strong> not applicable—dataset provided by FlyRank, not collected by this project. (N/A)</li>
             </ul>
             
-            <h3>Code</h3>
+            <h3><span class="sec-num">7.4</span> Code</h3>
             <ul>
                 <li><strong>Dependencies:</strong> <code>duckdb</code>, <code>pandas</code>, <code>numpy</code>, <code>scikit-learn</code>, <code>xgboost</code>, <code>matplotlib</code>, run in Google Colab (CPU runtime). (Yes)</li>
                 <li><strong>Training code, evaluation code:</strong> See <a href="https://github.com/mehanshbarthwal-lab/search-ranking-ml/blob/main/work/notebooks/capstone.ipynb">capstone.ipynb</a>, <a href="https://github.com/mehanshbarthwal-lab/search-ranking-ml/blob/main/work/notebooks/w05_model.ipynb">w05_model.ipynb</a>, <a href="https://github.com/mehanshbarthwal-lab/search-ranking-ml/blob/main/work/notebooks/w06_validation_audit.ipynb">w06_validation_audit.ipynb</a>, and <a href="https://github.com/mehanshbarthwal-lab/search-ranking-ml/blob/main/work/notebooks/w07_action_playbook.ipynb">w07_action_playbook.ipynb</a> in the <a href="https://github.com/mehanshbarthwal-lab/search-ranking-ml">repo root</a>. (Yes)</li>
                 <li><strong>Pretrained models:</strong> None shipped—Logistic Regression is fast enough to retrain from the notebook directly. (Yes)</li>
-                <li><strong>README with results table:</strong> The results table in the Results section of this page IS the summary, with the exact notebook cell that produces each number documented in the notebooks. (Yes)</li>
+                <li><strong>README with results table:</strong> The results table in the Results section of this page (Table 1) IS the summary, with the exact notebook cell that produces each number documented in the notebooks. (Yes)</li>
             </ul>
             
-            <h3>Experimental results</h3>
+            <h3><span class="sec-num">7.5</span> Experimental results</h3>
             <ul>
                 <li><strong>Hyperparameters:</strong> Logistic Regression used mostly with defaults plus <code>class_weight='balanced'</code>; tuning via 4-fold <code>GroupKFold</code> scored F1=0.349 (no meaningful change from 0.350). (Yes)</li>
                 <li><strong>Number of runs:</strong> Single train/test split for the headline number (<code>random_state=42</code>), corroborated by 5-fold GroupKFold. (Yes)</li>
@@ -245,10 +289,39 @@
         </section>
 
         <section id="acknowledgments">
-            <h2>Acknowledgments & Data Credit</h2>
+            <h2><span class="sec-num">8</span> Acknowledgments & Data Credit</h2>
             <p>Built on the <a href="https://flyrank.ai">FlyRank ML Internship dataset</a>.</p>
         </section>
+
+        <section id="footnotes" class="footnotes">
+            <hr>
+            <p id="fn1"><sup>1</sup> Confirmed during validation as a documentation/code mismatch, not a leakage issue.</p>
+            <p id="fn2"><sup>2</sup> Populated on only ~6% of pages in the starter sample—too sparse to support a classifier.</p>
+            <p id="fn3"><sup>3</sup> This is exactly why the split is grouped by client in the first place.</p>
+        </section>
     </main>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Render inline math
+            const inlineMath = document.querySelectorAll('.math-inline');
+            inlineMath.forEach(function(el) {
+                katex.render(el.textContent, el, {
+                    displayMode: false,
+                    throwOnError: false
+                });
+            });
+
+            // Render display math
+            const displayMath = document.querySelectorAll('.math-display');
+            displayMath.forEach(function(el) {
+                katex.render(el.textContent, el, {
+                    displayMode: true,
+                    throwOnError: false
+                });
+            });
+        });
+    </script>
     <script src="charts.js"></script>
 </body>
 </html>

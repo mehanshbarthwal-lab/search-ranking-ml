@@ -1,11 +1,11 @@
+/* arXiv-style LaTeX Academic Typography */
 :root {
-    --bg-color: #fcfcfc;
-    --text-color: #2c2f33;
-    --accent-color: #1a5f7a; /* Deep teal */
-    --accent-light: #e8f0f3;
-    --border-color: #e0e0e0;
-    --font-serif: 'Source Serif 4', Georgia, serif;
-    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --bg-color: #fdfdfd;
+    --text-color: #1a1a1a;
+    --accent-color: #1a5f7a; /* Deep teal for links/emphasis */
+    --border-color: #000; /* Strict academic borders are solid black/dark */
+    --font-serif: 'STIX Two Text', 'Latin Modern Roman', 'Computer Modern', Georgia, serif;
+    --font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace;
     --max-width: 740px;
 }
 
@@ -13,8 +13,8 @@ body {
     background-color: var(--bg-color);
     color: var(--text-color);
     font-family: var(--font-serif);
-    font-size: 1.125rem;
-    line-height: 1.6;
+    font-size: 1.1rem; /* Slightly smaller for an academic feel */
+    line-height: 1.5;
     margin: 0;
     padding: 0;
     display: flex;
@@ -22,49 +22,81 @@ body {
 }
 
 /* Typography */
-h1, h2, h3, h4, .kpi-label, .kpi-value, nav {
-    font-family: var(--font-sans);
+h1, h2, h3, h4 {
+    font-family: var(--font-serif);
+    color: #000;
 }
 
-h1 {
+/* Title block arXiv style */
+.title-block {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.title-block h1 {
     font-size: 2.25rem;
     font-weight: 600;
-    line-height: 1.2;
-    margin-bottom: 2rem;
-    color: #111;
+    line-height: 1.25;
+    margin-bottom: 1.5rem;
 }
 
+.title-block .byline {
+    font-size: 1.2rem;
+    font-weight: 400;
+    margin-bottom: 0.5rem;
+}
+
+.title-block .affiliation {
+    font-size: 0.95rem;
+    color: #444;
+}
+
+/* Abstract arXiv style */
+.abstract-block {
+    margin: 0 auto 3rem auto;
+    width: 90%;
+    font-size: 1.05rem;
+    line-height: 1.45;
+}
+
+.abstract-block strong {
+    font-size: 1rem;
+}
+
+/* Headings */
 h2 {
-    font-size: 1.5rem;
+    font-size: 1.4rem;
     font-weight: 600;
     margin-top: 3rem;
     margin-bottom: 1rem;
-    border-bottom: 1px solid var(--border-color);
-    padding-bottom: 0.5rem;
-    color: var(--accent-color);
 }
 
 h3 {
-    font-size: 1.125rem;
+    font-size: 1.15rem;
     font-weight: 600;
-    margin-top: 1.5rem;
-    margin-bottom: 0.5rem;
+    margin-top: 2rem;
+    margin-bottom: 0.75rem;
+}
+
+.sec-num {
+    font-variant-caps: small-caps;
+    margin-right: 0.4rem;
 }
 
 p {
     margin-bottom: 1.25rem;
+    text-align: justify; /* Common in LaTeX, but web justify can be rough, so we keep it subtle or let it be */
 }
 
 a {
     color: var(--accent-color);
-    text-decoration: underline;
-    text-decoration-color: rgba(26, 95, 122, 0.3);
-    text-underline-offset: 3px;
-    transition: text-decoration-color 0.2s;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(26, 95, 122, 0.3);
+    transition: border-bottom-color 0.2s;
 }
 
 a:hover {
-    text-decoration-color: var(--accent-color);
+    border-bottom-color: var(--accent-color);
 }
 
 strong {
@@ -72,11 +104,11 @@ strong {
 }
 
 code {
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-    font-size: 0.9em;
-    background-color: rgba(0, 0, 0, 0.04);
-    padding: 0.1em 0.3em;
-    border-radius: 3px;
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    padding: 0.1em 0.2em;
+    background: #f4f4f4;
+    border-radius: 2px;
 }
 
 /* Layout */
@@ -87,12 +119,14 @@ code {
     width: 100%;
 }
 
+/* TOC */
 .toc {
     position: fixed;
     top: 4rem;
-    left: max(1rem, calc(50% - var(--max-width)/2 - 220px));
-    width: 180px;
+    left: max(1rem, calc(50% - var(--max-width)/2 - 240px));
+    width: 200px;
     font-size: 0.9rem;
+    font-family: var(--font-serif);
 }
 
 .toc ul {
@@ -106,8 +140,8 @@ code {
 }
 
 .toc a {
-    color: #666;
-    text-decoration: none;
+    color: #555;
+    border: none;
     transition: color 0.2s;
 }
 
@@ -115,105 +149,159 @@ code {
     color: var(--accent-color);
 }
 
+.toc .sec-num {
+    font-weight: 600;
+}
+
 /* Components */
 .meta-list {
-    background: var(--accent-light);
-    padding: 1.5rem 2rem;
-    border-radius: 8px;
+    padding-left: 2rem;
     margin: 2rem 0;
 }
 
 .meta-list li {
     margin-bottom: 0.5rem;
 }
-.meta-list li:last-child {
-    margin-bottom: 0;
-}
 
+/* KPIs - Minimal text layout */
 .kpi-strip {
     display: flex;
-    gap: 1.5rem;
+    gap: 2rem;
     margin: 2rem 0;
     flex-wrap: wrap;
+    justify-content: space-around;
+    border-top: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
+    padding: 1rem 0;
 }
 
 .kpi-card {
-    background: #fff;
-    border: 1px solid var(--border-color);
-    padding: 1.25rem;
-    border-radius: 8px;
-    flex: 1;
-    min-width: 120px;
     text-align: center;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.02);
 }
 
 .kpi-value {
     display: block;
-    font-size: 1.75rem;
+    font-size: 1.5rem;
     font-weight: 600;
-    color: var(--accent-color);
-    line-height: 1.1;
+    color: var(--text-color);
 }
 
 .kpi-label {
     display: block;
     font-size: 0.85rem;
-    color: #666;
-    margin-top: 0.5rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+    font-variant-caps: small-caps;
+    color: #444;
 }
 
-/* Tables */
-.table-container {
-    overflow-x: auto;
-    margin: 2rem 0;
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.95rem;
-    font-family: var(--font-sans);
-}
-
-th, td {
-    padding: 0.75rem 1rem;
-    text-align: left;
-    border-bottom: 1px solid var(--border-color);
-}
-
-th {
-    font-weight: 600;
-    background: var(--accent-light);
-    color: var(--accent-color);
-}
-
-.circular-row {
-    color: #888;
-    background-color: #fafafa;
-}
-.circular-row code {
-    background-color: transparent;
-}
-
-.highlight-row {
-    background-color: rgba(26, 95, 122, 0.05);
-}
-
-/* Charts */
-.chart-wrapper {
+/* Academic Tables */
+.table-block {
     margin: 3rem 0;
 }
 
-.chart-caption {
-    font-family: var(--font-sans);
-    font-size: 0.85rem;
+.academic-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+    font-family: var(--font-serif);
+    border-top: 2px solid var(--border-color);
+    border-bottom: 2px solid var(--border-color);
+}
+
+.academic-table th, .academic-table td {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    border: none;
+}
+
+.academic-table thead tr {
+    border-bottom: 1px solid var(--border-color);
+}
+
+/* Align numeric columns */
+.academic-table .numeric-col {
+    text-align: right;
+    font-feature-settings: "tnum";
+    font-variant-numeric: tabular-nums;
+}
+
+/* No zebra stripes in academic papers, but we can highlight a row gently */
+.academic-table .highlight-row td {
+    font-weight: 600;
+}
+.academic-table .circular-note {
+    font-size: 0.8em;
     color: #666;
+    font-weight: normal;
+}
+
+/* Figures */
+.figure-block {
+    margin: 3.5rem auto;
     text-align: center;
-    margin-top: 1rem;
-    font-style: italic;
+    max-width: 90%;
+}
+
+.chart-wrapper {
+    margin-bottom: 1rem;
+}
+
+.caption {
+    font-size: 0.95rem;
+    color: #444;
+    text-align: center;
+    line-height: 1.4;
+}
+
+/* Equations */
+.display-equation {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 2.5rem 0;
+    position: relative;
+    width: 100%;
+}
+
+.math-display {
+    flex-grow: 1;
+    text-align: center;
+}
+
+.equation-number {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+/* Pull Quotes / Emphasis */
+.pull-quote {
+    color: var(--accent-color);
+    font-size: 1.05em;
+}
+
+/* Footnotes */
+.footnote-ref {
+    font-size: 0.75em;
+    vertical-align: super;
+    border: none;
+    color: var(--accent-color);
+}
+
+.footnotes {
+    margin-top: 4rem;
+    font-size: 0.9rem;
+    color: #444;
+}
+.footnotes hr {
+    border: none;
+    border-top: 1px solid #ccc;
+    width: 20%;
+    margin-left: 0;
+    margin-bottom: 1rem;
+}
+.footnotes p {
+    margin-bottom: 0.5rem;
 }
 
 /* Responsive */
@@ -228,15 +316,31 @@ th {
         padding: 2rem 1.5rem;
     }
     
-    h1 {
-        font-size: 1.75rem;
+    .title-block h1 {
+        font-size: 1.8rem;
+    }
+    
+    .abstract-block {
+        width: 100%;
     }
     
     .kpi-strip {
         gap: 1rem;
     }
     
-    .kpi-card {
-        min-width: 40%;
+    .figure-block {
+        max-width: 100%;
+    }
+    
+    /* Display equations might overflow on mobile, enable scroll if needed */
+    .display-equation {
+        overflow-x: auto;
+    }
+    
+    .academic-table {
+        font-size: 0.85rem;
+    }
+    .academic-table th, .academic-table td {
+        padding: 0.5rem;
     }
 }
