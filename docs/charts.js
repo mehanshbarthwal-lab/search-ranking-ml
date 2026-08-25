@@ -6,8 +6,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     const accent = '#8c3a3a';      // Burgundy
     const accentLight = '#d49b9b'; // Lighter Burgundy
-    const neutral = '#8a857e';     // Warm grey
-    const neutralLight = '#dcd7cd'; // Very light warm grey
+    const navy = '#3b5c7a';        // Deep Navy
+    const gold = '#d4a373';        // Warm Gold
+    const lightGrey = '#e3ded5';   // Very light warm grey
 
     // 1. F1 Comparison Chart
     const ctx1 = document.getElementById('f1ComparisonChart').getContext('2d');
@@ -28,9 +29,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 label: 'F1 Score',
                 data: [1.000, 0.158, 0.703, 0.365, 0.350, 0.352, 0.341, 0.349],
                 backgroundColor: [
-                    neutralLight, 
+                    lightGrey, 
                     accentLight, 
-                    neutral, 
+                    navy, 
                     accentLight, 
                     accent, 
                     accentLight, 
@@ -70,8 +71,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 {
                     label: 'Precision',
                     data: [0.18, 0.20, 0.23, 0.246, 0.25, 0.259, 0.282, 0.296, 0.32, 0.351, 0.38, 0.45, 0.5],
-                    borderColor: neutral,
-                    backgroundColor: neutral,
+                    borderColor: navy,
+                    backgroundColor: navy,
                     tension: 0.4,
                     borderWidth: 2,
                     borderDash: [5, 5]
@@ -95,8 +96,8 @@ document.addEventListener('DOMContentLoaded', function() {
             labels: ['Top 50 Recommended Actions'],
             datasets: [
                 { label: 'structural_fix', data: [28], backgroundColor: accent },
-                { label: 'investigate_quiet_risk', data: [18], backgroundColor: neutral },
-                { label: 'verify_then_review', data: [4], backgroundColor: neutralLight }
+                { label: 'investigate_quiet_risk', data: [18], backgroundColor: navy },
+                { label: 'verify_then_review', data: [4], backgroundColor: gold }
             ]
         },
         options: {

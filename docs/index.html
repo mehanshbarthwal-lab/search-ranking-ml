@@ -39,14 +39,14 @@
 
         <section id="abstract" class="abstract-block">
             <strong>Abstract.</strong>
-            When a content page loses clicks, is it because fewer people see it, or because people see it just as often but stop clicking? This project builds a client-grouped classifier on FlyRank warehouse data to distinguish these two patterns using only prior-period signals that pass a decision-time leakage test. <span class="pull-quote">Logistic Regression reaches F1=0.350 (base rate 0.229) on a held-out, client-grouped split, corroborated by 5-fold cross-validation (mean F1=0.340, std=0.034).</span> The resulting ranked action queue reaches precision@50=0.58, and is translated into a four-action editor playbook with an honest, lower-bound ad-equivalent dollar estimate of value at risk. Every extension tried after the initial result—new features, a stronger model, hyperparameter tuning, engagement data—converged on the same ~0.35 ceiling, treated here as a finding, not a shortfall.
+            When a content page loses clicks, is it because fewer people see it, or because people see it just as often but stop clicking? This project builds a client-grouped classifier on FlyRank warehouse data to distinguish these two patterns using only prior-period signals that pass a decision-time leakage test. <span class="pull-quote">Logistic Regression reaches F1=0.350 (base rate 0.229) on a held-out, client-grouped split, corroborated by 5-fold cross-validation (mean F1=0.340, std=0.034).</span> The resulting ranked action queue reaches precision@50=0.58, and is translated into a four-action editor playbook with an honest, lower-bound ad-equivalent dollar estimate of value at risk. Every extension tried after the initial result (new features, a stronger model, hyperparameter tuning, engagement data) converged on the same ~0.35 ceiling. This consistency is treated here as a finding rather than a shortfall.
         </section>
         
         <div class="abstract-spacer"></div>
 
         <section id="introduction">
             <h2><span class="sec-num">1</span> Introduction / Problem Statement</h2>
-            <p>A content team watching a page's traffic decline has one primary lever: refresh it. But "declining" hides two fundamentally different problems. A page can lose clicks because fewer people ever see it—normal visibility decay—or because roughly the same number of people see it and simply stop clicking, a pattern consistent with something answering the query before the click happens. Treating both as the same problem means editors sometimes refresh pages that were never losing visibility, and sometimes miss pages where a routine refresh was never going to help.</p>
+            <p>A content team watching a page's traffic decline has one primary lever: refresh it. But "declining" hides two fundamentally different problems. A page can lose clicks because fewer people ever see it, representing normal visibility decay. Alternatively, roughly the same number of people might see it but simply stop clicking. This second pattern is consistent with something answering the query before the click happens. Treating both as the same problem means editors sometimes refresh pages that were never losing visibility, and sometimes miss pages where a routine refresh was never going to help.</p>
 
             <div class="intro-diagram">
                 <svg width="420" height="150" viewBox="0 0 420 150" xmlns="http://www.w3.org/2000/svg">
@@ -118,7 +118,7 @@
         <section id="results">
             <h2><span class="sec-num">4</span> Results</h2>
             
-            <div class="kpi-strip">
+            <div class="kpi-strip stat-cards">
                 <div class="kpi-card">
                     <span class="kpi-value">0.350</span>
                     <span class="kpi-label">F1 (Grouped Split)</span>
@@ -137,7 +137,7 @@
                 </div>
             </div>
 
-            <p><strong>Interpretation:</strong> Reaching an F1 of 0.350 demonstrates signal well above the 22.9% base rate. Operationally, Precision@50=0.58 is the decision-relevant metric—of the top 50 pages the model ranks highest, 58% are true answered_away cases. This is the practical leverage point, as an editor can reasonably review about 50 pages per cycle (see Table 1). Detailed performance metrics, threshold behaviors, action composition, and cross-validation spreads are illustrated in Figures 1 through 4 respectively.</p>
+            <p><strong>Interpretation:</strong> Reaching an F1 of 0.350 demonstrates signal well above the 22.9% base rate. Operationally, Precision@50=0.58 is the decision-relevant metric. Of the top 50 pages the model ranks highest, 58% are true answered_away cases. This is the practical leverage point, as an editor can reasonably review about 50 pages per cycle (see Table 1). Detailed performance metrics, threshold behaviors, action composition, and cross-validation spreads are illustrated in Figures 1 through 4 respectively.</p>
             
             <div class="display-equation">
                 <div class="math-display">F_1 = 2 \cdot \frac{\text{precision} \cdot \text{recall}}{\text{precision} + \text{recall}}</div>
@@ -145,7 +145,7 @@
             </div>
 
             <div class="pull-quote">
-                <strong>The Model Ceiling:</strong> Four separate architectural and feature extensions—incorporating content age/freshness features, switching to an XGBoost backend, aggressive hyperparameter tuning, and appending GA4 engagement features—all converged on roughly the same 0.35 F1 mark, none producing a meaningful lift.
+                <strong>The Model Ceiling:</strong> Four separate architectural and feature extensions were evaluated: incorporating content age features, switching to an XGBoost backend, aggressive hyperparameter tuning, and appending GA4 engagement features. All converged on roughly the same 0.35 F1 mark, and none produced a meaningful lift.
             </div>
             
             <p>We treat this consistency as rigorous evidence of a true performance ceiling on this specific prior-period feature set, rather than a string of failed optimization attempts, evaluated via F1 score as defined in Equation 1.</p>
@@ -225,7 +225,7 @@
                 <div class="chart-wrapper">
                     <canvas id="thresholdSweepChart"></canvas>
                 </div>
-                <p class="caption">Figure 2: Threshold sweep — F1 and precision as a function of classification threshold.</p>
+                <p class="caption">Figure 2: Threshold sweep. F1 and precision as a function of classification threshold.</p>
             </div>
 
             <div class="figure-block">
@@ -267,7 +267,7 @@
                 <li><span class="action-badge badge-refresh">Routine Refresh</span> Rule-labeled normal_decay, no extreme swing. <em>Action: Standard content freshening.</em></li>
             </ul>
 
-            <p><strong>Economics framing:</strong> The ad-equivalent value at risk for the 28 <em>structural_fix</em> rows on this run totals <strong>$72.50</strong>—computed as (clicks lost) × cpc. This is an explicit proxy for what it would cost to rebuy that traffic via ads, not a measured revenue figure. It must be read as a lower bound: it only prices pages with nonzero cpc, so real value at risk across the full queue is understated by this figure alone.</p>
+            <p><strong>Economics framing:</strong> The ad-equivalent value at risk for the 28 <em>structural_fix</em> rows on this run totals <strong>$72.50</strong>, computed as (clicks lost) × cpc. This is an explicit proxy for what it would cost to rebuy that traffic via ads, not a measured revenue figure. It must be read as a lower bound: it only prices pages with nonzero cpc, so real value at risk across the full queue is understated by this figure alone.</p>
         </section>
 
         <section id="reproducibility" class="appendix-section">
@@ -282,7 +282,7 @@
             </ul>
             
             <h3><span class="sec-num">7.2</span> Theoretical claims</h3>
-            <p>Not applicable—this is an applied/empirical paper, no theoretical proofs are made. (N/A)</p>
+            <p>Not applicable. This is an applied/empirical paper, no theoretical proofs are made. (N/A)</p>
             
             <h3><span class="sec-num">7.3</span> Dataset</h3>
             <ul>
@@ -290,14 +290,14 @@
                 <li><strong>Train/test split:</strong> <code>GroupShuffleSplit</code>, grouped by <code>client_hash_id</code>, <code>test_size=0.25</code>, <code>random_state=42</code>, zero client overlap between train and test asserted. Corroborated with 5-fold <code>GroupKFold</code>. (Yes)</li>
                 <li><strong>Exclusions:</strong> pages with fewer than 60 days of history before the March 2026 decision date are excluded. <code>content_age_days</code> scoped early but never added. AI-referral session columns dropped early due to sparsity (~6%). (Yes)</li>
                 <li><strong>Dataset link:</strong> Gated access dataset, available to FlyRank ML Internship participants, see <a href="https://flyrank.ai">https://flyrank.ai</a>. (<code>hf://datasets/FlyRank/internship-warehouse</code>). (Yes)</li>
-                <li><strong>Data collection:</strong> not applicable—dataset provided by FlyRank, not collected by this project. (N/A)</li>
+                <li><strong>Data collection:</strong> Not applicable. The dataset was provided by FlyRank, not collected by this project. (N/A)</li>
             </ul>
             
             <h3><span class="sec-num">7.4</span> Code</h3>
             <ul>
                 <li><strong>Dependencies:</strong> <code>duckdb</code>, <code>pandas</code>, <code>numpy</code>, <code>scikit-learn</code>, <code>xgboost</code>, <code>matplotlib</code>, run in Google Colab (CPU runtime). (Yes)</li>
                 <li><strong>Training code, evaluation code:</strong> See <a href="https://github.com/mehanshbarthwal-lab/search-ranking-ml/blob/main/work/notebooks/capstone.ipynb">capstone.ipynb</a>, <a href="https://github.com/mehanshbarthwal-lab/search-ranking-ml/blob/main/work/notebooks/w05_model.ipynb">w05_model.ipynb</a>, <a href="https://github.com/mehanshbarthwal-lab/search-ranking-ml/blob/main/work/notebooks/w06_validation_audit.ipynb">w06_validation_audit.ipynb</a>, and <a href="https://github.com/mehanshbarthwal-lab/search-ranking-ml/blob/main/work/notebooks/w07_action_playbook.ipynb">w07_action_playbook.ipynb</a> in the <a href="https://github.com/mehanshbarthwal-lab/search-ranking-ml">repo root</a>. (Yes)</li>
-                <li><strong>Pretrained models:</strong> None shipped—Logistic Regression is fast enough to retrain from the notebook directly. (Yes)</li>
+                <li><strong>Pretrained models:</strong> None shipped. Logistic Regression is fast enough to retrain from the notebook directly. (Yes)</li>
                 <li><strong>README with results table:</strong> The results table in the Results section of this page (Table 1) IS the summary, with the exact notebook cell that produces each number documented in the notebooks. (Yes)</li>
             </ul>
             
@@ -322,7 +322,7 @@
         <section id="footnotes" class="footnotes">
             <hr>
             <p id="fn1"><sup>1</sup> Confirmed during validation as a documentation/code mismatch, not a leakage issue.</p>
-            <p id="fn2"><sup>2</sup> Populated on only ~6% of pages in the starter sample—too sparse to support a classifier.</p>
+            <p id="fn2"><sup>2</sup> Populated on only ~6% of pages in the starter sample, which is too sparse to support a classifier.</p>
             <p id="fn3"><sup>3</sup> This is exactly why the split is grouped by client in the first place.</p>
         </section>
     </main>
