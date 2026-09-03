@@ -38,7 +38,7 @@
         
         <div class="abstract-block" id="abstract">
             <strong>Abstract.</strong>
-            FlyRank's product currently flags declining pages using hand-written rules, including health scores, quick-win tags, and needs-attention flags. These heuristics work well in standard cases but break down when signals become numerous, tangled, or begin shifting. When a content page loses clicks, is it because fewer people see it, or because people see it just as often but stop clicking? This project builds a client-grouped classifier on an ~82 million row search performance dataset (1.17 GB) from FlyRank to distinguish these two patterns. Using only prior-period signals that pass a decision-time leakage test, we ask whether a learned model can outperform the fixed rule in exactly the gap where it struggles. Logistic Regression reaches F1=0.350 (base rate 0.229) on a held-out, client-grouped split, corroborated by 5-fold cross-validation (mean F1=0.340, std=0.034). The resulting ranked action queue reaches precision@50=0.58, and is translated into a four-action editor playbook with an honest, lower-bound ad-equivalent dollar estimate of value at risk. Every extension tried after the initial result (new features, a stronger model, hyperparameter tuning, engagement data) converged on the same ~0.35 ceiling. This consistency is treated here as a finding rather than a shortfall.
+            FlyRank's product currently flags declining pages using hand-written rules, including health scores, quick-win tags, and needs-attention flags. These heuristics work well in standard cases but break down when signals become numerous, tangled, or begin shifting. When a content page loses clicks, is it because fewer people see it, or because people see it just as often but stop clicking? This project builds a client-grouped classifier on <strong>an ~82 million row search performance dataset (1.17 GB)</strong> from FlyRank to distinguish these two patterns. Using only prior-period signals that pass a decision-time leakage test, we ask whether a learned model can outperform the fixed rule in exactly the gap where it struggles. <strong>Logistic Regression reaches F1=0.350</strong> (base rate 0.229) on a held-out, client-grouped split, corroborated by 5-fold cross-validation (mean F1=0.340, std=0.034). The resulting ranked action queue reaches <strong>precision@50=0.58</strong>, and is translated into a four-action editor playbook with an honest, lower-bound ad-equivalent dollar estimate of value at risk. Every extension tried after the initial result (new features, a stronger model, hyperparameter tuning, engagement data) <strong>converged on the same ~0.35 ceiling</strong>. This consistency is treated here as a finding rather than a shortfall.
         </div>
 
         <section id="introduction">
@@ -137,7 +137,7 @@
                 </div>
             </div>
 
-            <p><strong>Interpretation:</strong> Reaching an F1 of 0.350 demonstrates signal well above the 22.9% base rate. Operationally, Precision@50=0.58 is the decision-relevant metric. Of the top 50 pages the model ranks highest, 58% are true <code>answered_away</code> cases. This is the practical leverage point, as an editor can reasonably review about 50 pages per cycle (see Table 1). Detailed performance metrics, threshold behaviors, action composition, and cross-validation spreads are illustrated in Figures 2 through 5 respectively.</p>
+            <p><strong>Interpretation:</strong> Reaching an <strong>F1 of 0.350</strong> demonstrates signal well above the <strong>22.9% base rate</strong>. Operationally, Precision@50=0.58 is the decision-relevant metric. Of the top 50 pages the model ranks highest, <strong>58% are true <code>answered_away</code> cases</strong>. This is the practical leverage point, as an editor can reasonably review about 50 pages per cycle (see Table 1). Detailed performance metrics, threshold behaviors, action composition, and cross-validation spreads are illustrated in Figures 2 through 5 respectively.</p>
             
             <div class="display-equation">
                 <div class="math-display">F_1 = 2 \cdot \frac{\text{precision} \cdot \text{recall}}{\text{precision} + \text{recall}}</div>
@@ -145,7 +145,7 @@
             </div>
 
             <div class="pull-quote">
-                <strong>The Model Ceiling:</strong> Four separate architectural and feature extensions were evaluated: incorporating content age features, switching to an XGBoost backend, aggressive hyperparameter tuning, and appending GA4 engagement features. All converged on roughly the same 0.35 F1 mark, and none produced a meaningful lift.
+                <strong>The Model Ceiling:</strong> Four separate architectural and feature extensions were evaluated: incorporating content age features, switching to an XGBoost backend, aggressive hyperparameter tuning, and appending GA4 engagement features. <strong>All converged on roughly the same 0.35 F1 mark</strong>, and none produced a meaningful lift.
             </div>
             
             <p>We treat this consistency as rigorous evidence of a true performance ceiling on this specific prior-period feature set, rather than a string of failed optimization attempts, evaluated via F1 score as defined in Equation 1.</p>
